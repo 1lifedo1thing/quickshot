@@ -46,15 +46,20 @@ export function useStageView({ image, layout, viewport, unit, topMargin, viewpor
 		setDragging(false);
 	}, [fit, image]);
 
-	const setZoom = useCallback((zoom: number, anchor?: Point) => {
-		if (!layout || scale <= 0) return;
-		const next = clampZoom(zoom);
-		const ratio = next / unit / scale;
-		setView({ zoom: next, pan: clampPan(panAfterZoom(pan, anchor ?? { x: 0, y: 0 }, ratio),
-			{ w: content.w * ratio, h: content.h * ratio }, available) });
-	}, [available, content, layout, pan, scale, unit]);
-	const zoomIn = useCallback(() => setZoom(scale * unit * 1.25), [scale, setZoom, unit]);
-	const zoomOut = useCallback(() => setZoom(scale * unit / 1.25), [scale, setZoom, unit]);
+	const setZoom = useCallback((zoom: number | ((current: number) => number), anchor?: Point) => {
+		if (!layout || fitScale <= 0) return;
+		setView((current) => {
+			const currentZoom = current.zoom ?? fitScale * unit;
+			const currentContent = { w: layout.width * currentZoom / unit, h: layout.height * currentZoom / unit };
+			const currentPan = clampPan(current.pan, currentContent, available);
+			const next = clampZoom(typeof zoom === "function" ? zoom(currentZoom) : zoom);
+			const ratio = next / currentZoom;
+			return { zoom: next, pan: clampPan(panAfterZoom(currentPan, anchor ?? { x: 0, y: 0 }, ratio),
+				{ w: currentContent.w * ratio, h: currentContent.h * ratio }, available) };
+		});
+	}, [available, fitScale, layout, unit]);
+	const zoomIn = useCallback(() => setZoom((zoom) => zoom * 1.25), [setZoom]);
+	const zoomOut = useCallback(() => setZoom((zoom) => zoom / 1.25), [setZoom]);
 	const actualSize = useCallback(() => setZoom(1), [setZoom]);
 
 	useEffect(() => {
@@ -65,19 +70,27 @@ export function useStageView({ image, layout, viewport, unit, topMargin, viewpor
 			event.preventDefault();
 			if (busy() || panGesture.current) return;
 			const factor = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? available.h : 1;
-			if (event.ctrlKey || event.metaKey) {
+			const modifiedZoom = event.ctrlKey || event.metaKey;
+			const panWheel = !modifiedZoom && (event.shiftKey || handMode || spaceHeld || Math.abs(event.deltaX) > Math.abs(event.deltaY));
+			if (!panWheel) {
 				const bounds = element.getBoundingClientRect();
-				setZoom(scale * unit * Math.exp(-Math.max(-300, Math.min(300, event.deltaY * factor)) * 0.005),
+				const multiplier = Math.exp(-Math.max(-300, Math.min(300, event.deltaY * factor)) * (modifiedZoom ? 0.005 : 0.002));
+				setZoom((zoom) => zoom * multiplier,
 					{ x: event.clientX - bounds.left - centre.x, y: event.clientY - bounds.top - centre.y });
 			} else {
 				const dx = event.shiftKey && !event.deltaX ? event.deltaY : event.deltaX;
 				const dy = event.shiftKey && !event.deltaX ? 0 : event.deltaY;
-				setView({ zoom: view.zoom, pan: clampPan({ x: pan.x - dx * factor, y: pan.y - dy * factor }, content, available) });
+				setView((current) => {
+					const currentScale = current.zoom === null ? fitScale : current.zoom / unit;
+					const currentContent = { w: layout.width * currentScale, h: layout.height * currentScale };
+					const currentPan = clampPan(current.pan, currentContent, available);
+					return { zoom: current.zoom, pan: clampPan({ x: currentPan.x - dx * factor, y: currentPan.y - dy * factor }, currentContent, available) };
+				});
 			}
 		};
 		element.addEventListener("wheel", wheel, { passive: false });
 		return () => element.removeEventListener("wheel", wheel);
-	}, [available, busy, centre.x, centre.y, content, layout, pan, scale, setZoom, unit, view.zoom, viewportRef]);
+	}, [available, busy, centre.x, centre.y, fitScale, handMode, layout, setZoom, spaceHeld, unit, viewportRef]);
 
 	useEffect(() => {
 		const down = (event: KeyboardEvent) => {
