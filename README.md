@@ -55,6 +55,7 @@
 | **Presentation-ready in one click** | Gradients, window frames, rounded corners, soft shadows, aspect ratios and your own signature. Set a style as the default and every new capture starts that way. |
 | **Stitch several captures** | Add another capture with `Mod+Shift+A`, or paste and drop images, then lay them out vertically, horizontally or in a grid. |
 | **Pin and read** | Float a capture above everything, or pull out its text with on-device OCR. Smart Redact covers user and host names, emails, IPs and keys in one step. |
+| **Zoom, pan and crop** | Scroll to zoom into details, drag to pan, then crop the capture. Crops support undo and keep the annotations inside the selection. |
 | **Private by design** | Screenshots never leave your computer. No account, no cloud, just an anonymous launch count. |
 
 ## Download
@@ -91,6 +92,13 @@ Ten tools, each on a single key: **select, rectangle, ellipse, arrow, line, pen,
 - Text supports plain, background and outline styles, multiple lines, and Chinese/Japanese input methods.
 - Sizes follow the capture's pixel density, so annotations look the same on Retina and standard displays.
 - Unlimited undo and redo.
+
+### Zoom and crop
+
+- Scroll over the canvas to zoom around the pointer, or use the bottom controls to choose 1%–800%, actual size or fit to window. Trackpad pinch and `Mod+=` / `Mod+-` also zoom.
+- Pan with the hand tool, hold `Space` and drag, or drag with the middle mouse button. Scrolling pans in hand mode; `Shift` + scroll pans horizontally.
+- Press `C` to crop. Draw a selection, move it or resize its edges and corners; press Return to apply or Esc to cancel. Crops support undo/redo, retain the original image and preserve annotations within the crop. Text extraction, Smart Redact and export use the cropped content.
+- Zoom changes only the view, so saving and copying keep the output resolution. Long captures render only the visible canvas area to keep memory use bounded.
 
 ### Stitch
 
@@ -137,6 +145,9 @@ Screenshots, and any text in them, never leave your computer. There is no accoun
 | Editor | `Mod+S` / `Mod+Shift+S` | Save to Downloads / Save As |
 | Editor | `Mod+Shift+P` / `Mod+Shift+T` | Pin / extract text |
 | Editor | `Mod+Shift+M` | Smart Redact |
+| Editor | `C` | Crop; Return applies, Esc cancels |
+| Editor | `Mod+=` / `Mod+-` | Zoom in / out |
+| Editor | `Mod+0` / `Mod+9` | Actual size / fit to window |
 | Editor | `Mod+Shift+A`, `Mod+V` | Stitch another capture / a copied image |
 | Editor | `Mod+D`, `Delete`, arrow keys | Duplicate, delete, nudge the selected annotation |
 | Editor | `[` / `]` | Thinner / thicker |
