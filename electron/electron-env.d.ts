@@ -37,6 +37,7 @@ interface SettingsState {
 	language: "auto" | "zh" | "en";
 	macCaptureMode: "overlay" | "system";
 	overlayDoubleClickCopy: boolean;
+	trayClickCaptures: boolean;
 	launchAtLogin: boolean;
 	launchAtLoginAvailable: boolean;
 	update: {
@@ -262,6 +263,7 @@ interface Window {
 			setLanguage: (language: "auto" | "zh" | "en") => Promise<{ success: boolean; state?: SettingsState }>;
 			setCaptureMode: (mode: "overlay" | "system") => Promise<{ success: boolean; state?: SettingsState }>;
 			setOverlayDoubleClickCopy: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
+			setTrayClickCaptures: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
 			setLaunchAtLogin: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
 			checkUpdate: () => Promise<{ success: boolean; state?: SettingsState }>;
 			installUpdate: () => Promise<{ success: boolean }>;

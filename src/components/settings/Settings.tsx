@@ -519,6 +519,22 @@ export function Settings() {
 							/>
 						</Row>
 					)}
+					{IS_MAC && (
+						<Row
+							label={t("settings.trayClickCaptures")}
+							detail={
+								<p className="mt-1 text-[11.5px] text-[var(--qs-text-3)]">{t("settings.trayClickCapturesHint")}</p>
+							}
+						>
+							<Switch
+								checked={state.trayClickCaptures}
+								label={t("settings.trayClickCaptures")}
+								onChange={(enabled) =>
+									void api?.setTrayClickCaptures(enabled).then((result) => result.state && setState(result.state))
+								}
+							/>
+						</Row>
+					)}
 					<Row
 						label={t("settings.copyCloses")}
 						detail={

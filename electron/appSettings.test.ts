@@ -13,6 +13,17 @@ describe("normalizeAppSettings", () => {
 		expect(normalizeAppSettings({ overlayDoubleClickCopy: "yes" }).overlayDoubleClickCopy).toBe(false);
 	});
 
+	it("starts a capture on tray left-click by default", () => {
+		expect(DEFAULT_APP_SETTINGS.trayClickCaptures).toBe(true);
+		expect(normalizeAppSettings({}).trayClickCaptures).toBe(true);
+	});
+
+	it("keeps an explicit tray-click choice and rejects anything else", () => {
+		expect(normalizeAppSettings({ trayClickCaptures: true }).trayClickCaptures).toBe(true);
+		expect(normalizeAppSettings({ trayClickCaptures: false }).trayClickCaptures).toBe(false);
+		expect(normalizeAppSettings({ trayClickCaptures: "no" }).trayClickCaptures).toBe(true);
+	});
+
 	it("falls back to the defaults for a broken settings file", () => {
 		expect(normalizeAppSettings(null)).toEqual(DEFAULT_APP_SETTINGS);
 		expect(normalizeAppSettings("junk")).toEqual(DEFAULT_APP_SETTINGS);
