@@ -2053,6 +2053,7 @@ async function captureDisplayImage(display: Display): Promise<CapturedFrame | nu
 			if (Math.abs(width - expectedWidth) <= 2 && Math.abs(height - expectedHeight) <= 2) {
 				writeDiagnostic("display-capture", {
 					via: "agent",
+					display: display.id,
 					ms: agentCapture.ms,
 					captureMs: agentCapture.response.captureMs,
 					encodeMs: agentCapture.response.encodeMs,
@@ -2060,6 +2061,7 @@ async function captureDisplayImage(display: Display): Promise<CapturedFrame | nu
 				return { buffer: agentCapture.buffer, mimeType: "image/jpeg", width, height, heldByAgent: true };
 			}
 			writeDiagnostic("capture-agent-size-mismatch", {
+				display: display.id,
 				size: { width, height },
 				expected: { width: expectedWidth, height: expectedHeight },
 			});
@@ -2067,7 +2069,7 @@ async function captureDisplayImage(display: Display): Promise<CapturedFrame | nu
 		const startedAt = Date.now();
 		const nativeCapture = pngFrame(await captureDisplayWithScreencapture(display));
 		if (nativeCapture) {
-			writeDiagnostic("display-capture", { via: "screencapture", ms: Date.now() - startedAt });
+			writeDiagnostic("display-capture", { via: "screencapture", display: display.id, ms: Date.now() - startedAt });
 			return nativeCapture;
 		}
 	}
@@ -4094,6 +4096,8 @@ function registerIpcHandlers() {
 		clearRegionReadyWatchdog();
 		clearOverlayCaptureWatchdog();
 		overlayCaptureStep = "idle";
+		// Re-sync in case display geometry moved between capture start and ready.
+		if (activeCaptureDisplay) syncRegionSelectorBounds(activeCaptureDisplay);
 		regionSelectorWindow.show();
 		if (process.platform === "darwin") app.focus({ steal: true });
 		regionSelectorWindow.focus();
@@ -4102,7 +4106,11 @@ function registerIpcHandlers() {
 		}
 		capturePhase = "selecting-region";
 		pendingRegionCaptureSession = null;
-		writeDiagnostic("region-selector-shown", { sessionId, ms: Date.now() - captureStartedAt });
+		writeDiagnostic("region-selector-shown", {
+			sessionId,
+			ms: Date.now() - captureStartedAt,
+			displayId: activeCaptureDisplay?.id ?? null,
+		});
 		return { success: true };
 	});
 
