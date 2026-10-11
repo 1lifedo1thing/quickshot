@@ -69,7 +69,14 @@ jobs:
       - run: npm run test:scroll-stitcher
       - run: npm run build:ocr-helper:universal
       - name: Package macOS arm64 directory
-        run: npx electron-builder --mac --dir --arm64 --config.directories.output="$RUNNER_TEMP/quickshot-package"
+        # Fork PRs normally skip signing. These disposable test packages use
+        # ad-hoc signing only, with no certificate or signing secrets.
+        env:
+          CSC_FOR_PULL_REQUEST: "true"
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: |
+          unset CSC_LINK CSC_KEY_PASSWORD
+          npx electron-builder --mac --dir --arm64 --config.mac.identity=- --config.directories.output="$RUNNER_TEMP/quickshot-package"
       - name: Verify packaged OCR
         run: |
           APP_PATH="$RUNNER_TEMP/quickshot-package/mac-arm64/QuickShot.app"

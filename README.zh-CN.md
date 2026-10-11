@@ -75,7 +75,9 @@
 - **一个快捷键随处可用。** macOS 为 `⌘⇧X`，Windows 为 `Ctrl+Shift+X`，也可以点击托盘图标。
 - **QuickShot 选区**（默认）：屏幕保持原样，不变暗也不变色。鼠标悬停时为应用窗口描出一圈彩虹轮廓，单击即截取这个窗口并进入编辑器；拖动则框选任意区域，松手后还能拖动挪位、拖边角调整大小或用方向键微调，按回车、双击或点 ✓ 进入编辑器，Esc 重新框选。macOS 上会单独截取窗口本身，不会带进叠在上面的其他窗口，圆角外保持透明。
 - **系统选区**（macOS 可选，在托盘菜单 → 选区方式中切换）：原生十字准星，按 `空格` 可切换为单窗口截图。
-- 选区里的**复制**按钮直接复制原图并退出截图。在设置中打开**双击仅复制**后，双击选区也会直接复制，默认关闭。进入编辑器时保留剪贴板内容；在编辑器里复制，则导出当前标注和美化效果。
+- 选区里的**复制**按钮使用已保存的背景、边框、阴影和水印，复制成品图后退出截图。**快速复制带样式**默认开启，在设置中关闭即可复制原图；单击识别的窗口仍进入编辑器。打开**双击仅复制**后，双击选区也会直接复制，这项设置默认关闭。进入编辑器时保留剪贴板内容；在编辑器里复制，则导出当前标注和美化效果。
+- macOS 可在设置中关闭**左键点击图标立即截图**，点击菜单栏图标时只打开菜单，适合搭配 Bartender、Ice 等工具使用。菜单中的截图入口和快捷键仍可正常使用。
+- 多显示器截图跟随鼠标所在屏幕，选区显示前再次同步位置。如果准备过程中屏幕断开或分辨率变化，会取消过期截图，避免图像错位或拉伸。
 - 编辑窗口在后台预热；十分钟没有截图后，会回收隐藏窗口以节省内存，下次使用时重新创建。
 
 <p align="center">
@@ -225,7 +227,7 @@ WRANGLER=/path/to/wrangler node scripts/publish-update-feed.mjs vX.Y.Z
 
 | 贡献者 | 贡献 |
 | --- | --- |
-| [@wlzh](https://github.com/wlzh) | 图标透明边角（[#4](https://github.com/cclank/quickshot/pull/4)）、选区复制操作与双击选项（[#5](https://github.com/cclank/quickshot/pull/5)）、空闲窗口内存回收（[#6](https://github.com/cclank/quickshot/pull/6)）、本地签名要求修复（[#7](https://github.com/cclank/quickshot/pull/7)）。 |
+| [@wlzh](https://github.com/wlzh) | 图标透明边角（[#4](https://github.com/cclank/quickshot/pull/4)）、选区复制操作与双击选项（[#5](https://github.com/cclank/quickshot/pull/5)）、空闲窗口内存回收（[#6](https://github.com/cclank/quickshot/pull/6)）、本地签名要求修复（[#7](https://github.com/cclank/quickshot/pull/7)）、菜单栏点击截图开关（[#11](https://github.com/cclank/quickshot/pull/11)）、多显示器截图定位（[#12](https://github.com/cclank/quickshot/pull/12)）、快速复制带样式（[#13](https://github.com/cclank/quickshot/pull/13)）。 |
 | [@dcn-autotest-team](https://github.com/dcn-autotest-team) | 修复非整数显示缩放下的截图尺寸取整（[#3](https://github.com/cclank/quickshot/pull/3)）。 |
 
 ## 项目来源与壁纸声明

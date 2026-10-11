@@ -75,7 +75,9 @@ Get them from the [latest release](https://github.com/cclank/quickshot/releases/
 - **One shortcut, anywhere.** `⌘⇧X` on macOS, `Ctrl+Shift+X` on Windows, or click the tray icon.
 - **QuickShot selection** (default): the screen stays exactly as it is. Hover to ring the window under the pointer in a soft spectrum and click to capture just that window and open the editor. Or drag out an area: after you let go you can still move it, resize it by an edge or corner, or nudge it with the arrow keys, then press Return, double-click or click ✓ to open the editor (Esc starts over). On macOS a window is captured on its own, so overlapping windows are left out and rounded corners stay transparent.
 - **System selection** (optional on macOS, via the tray menu → Selection Style): the native crosshair, including `Space` to capture a single window.
-- The selection's **Copy** button copies the original capture and closes the overlay. In Settings, **Double-Click Copies Only** makes double-clicking a selection do the same; it is off by default. Opening the editor leaves your clipboard unchanged, and copying from the editor exports your current annotations and style.
+- The selection's **Copy** button uses your saved background, frame, shadow and watermark, then closes the overlay. **Styled Quick Copies** is on by default; turn it off in Settings to copy the original capture. Clicking a detected window still opens the editor. **Double-Click Copies Only** makes double-clicking a selection copy it directly and is off by default. Opening the editor leaves your clipboard unchanged, and copying from the editor exports your current annotations and style.
+- On macOS, turn off **Left-Click Tray Captures** in Settings to open the menu without starting a capture. The menu's capture item and keyboard shortcut remain available, including when using menu-bar managers such as Bartender or Ice.
+- On multi-display setups, selection follows the pointer's display. The overlay refreshes its position before appearing; disconnecting that display or changing its resolution during preparation cancels the stale capture so its pixels cannot be stretched onto another screen.
 - The editor window is kept warm in the background. After ten minutes without a capture, hidden helper windows are released to save memory and rebuilt when needed.
 
 <p align="center">
@@ -254,7 +256,7 @@ Thank you to the contributors who help improve QuickShot.
 
 | Contributor | Contributions |
 | --- | --- |
-| [@wlzh](https://github.com/wlzh) | Transparent icon corners ([#4](https://github.com/cclank/quickshot/pull/4)), capture overlay copy actions and a double-click setting ([#5](https://github.com/cclank/quickshot/pull/5)), idle window recycling ([#6](https://github.com/cclank/quickshot/pull/6)), and stable local signing requirements ([#7](https://github.com/cclank/quickshot/pull/7)). |
+| [@wlzh](https://github.com/wlzh) | Transparent icon corners ([#4](https://github.com/cclank/quickshot/pull/4)), capture overlay copy actions and a double-click setting ([#5](https://github.com/cclank/quickshot/pull/5)), idle window recycling ([#6](https://github.com/cclank/quickshot/pull/6)), stable local signing requirements ([#7](https://github.com/cclank/quickshot/pull/7)), a tray-click capture setting ([#11](https://github.com/cclank/quickshot/pull/11)), multi-display capture placement ([#12](https://github.com/cclank/quickshot/pull/12)), and styled quick copies ([#13](https://github.com/cclank/quickshot/pull/13)). |
 | [@dcn-autotest-team](https://github.com/dcn-autotest-team) | Capture size rounding for fractional display scale factors ([#3](https://github.com/cclank/quickshot/pull/3)). |
 
 ## Project origins and wallpaper notice

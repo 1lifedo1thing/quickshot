@@ -1,10 +1,7 @@
 import { getAssetPath } from "@/lib/assetPath";
 import { decodeImageData } from "@/lib/decodeImage";
 import { parseBackground } from "./backgrounds";
-import {
-	type StyleSettings,
-	computeCompositionLayout,
-} from "./composition";
+import { computeCompositionLayout } from "./composition";
 import { loadStyleSettings } from "./persistence";
 import { renderComposition } from "./renderComposition";
 
@@ -39,8 +36,9 @@ export async function renderStyledCopy(
 	image: HTMLCanvasElement,
 	unit: number,
 ): Promise<Uint8Array | null> {
-	const settings: StyleSettings = loadStyleSettings();
-	const wallpaper = await loadWallpaper(settings.background);
+	const settings = loadStyleSettings();
+	const wallpaper = settings.beautify ? await loadWallpaper(settings.background) : null;
+	if (settings.beautify && parseBackground(settings.background).kind === "wallpaper" && !wallpaper) return null;
 	const layout = computeCompositionLayout(image.width, image.height, unit, settings);
 	const scale = Math.min(
 		1,

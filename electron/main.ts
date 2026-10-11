@@ -11,6 +11,7 @@ import {
 	writePngWithoutOverwrite,
 } from "./screenshotFiles";
 import { shouldRegisterCaptureShortcut } from "./captureShortcutPolicy";
+import { resolveFrozenCaptureDisplay } from "./captureDisplay";
 import { parseOcrHelperOutput, parseOcrWordsOutput } from "./ocrResult";
 import { type MachineIdentity, findSensitiveRegions } from "./sensitiveText";
 import {
@@ -4098,6 +4099,16 @@ function registerIpcHandlers() {
 			capturePhase !== "preparing-region"
 		) {
 			return { success: false };
+		}
+
+		if (activeCaptureDisplay) {
+			const currentDisplay = resolveFrozenCaptureDisplay(activeCaptureDisplay, screen.getAllDisplays());
+			if (!currentDisplay) {
+				writeDiagnostic("region-selector-display-changed", { sessionId, displayId: activeCaptureDisplay.id });
+				cancelActiveCapture();
+				return { success: false };
+			}
+			activeCaptureDisplay = currentDisplay;
 		}
 
 		// The overlay takes keyboard focus so Enter, arrows and shortcuts work.

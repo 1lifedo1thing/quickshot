@@ -11,6 +11,7 @@
 			// Renders the capture overlay against a fixed image instead of the screen.
 			// ?scroll=available lets S switch to scrolling capture; ?scroll=on starts there.
 			const parameters = new URLSearchParams(window.location.search);
+			if (parameters.has("style")) localStorage.setItem("quickshot.style.v2", parameters.get("style"));
 			const source = parameters.get("fixtureSource") || "/test-fixtures/sample-ui.svg";
 			window.__quickshotRegionFixture = { actions: [] };
 
@@ -65,6 +66,16 @@
 						composed instanceof Uint8Array ? String(composed.byteLength) : "";
 					if (composed instanceof Uint8Array) {
 						window.__quickshotRegionFixture.composedSignature = Array.from(composed.slice(0, 8));
+						const dimensions = new DataView(composed.buffer, composed.byteOffset, composed.byteLength);
+						document.documentElement.dataset.composedWidth = String(dimensions.getUint32(16, false));
+						document.documentElement.dataset.composedHeight = String(dimensions.getUint32(20, false));
+						const download = document.createElement("a");
+						download.dataset.fixtureExport = "true";
+						download.textContent = "下载快速复制的 PNG";
+						download.href = URL.createObjectURL(new Blob([composed], { type: "image/png" }));
+						download.download = "QuickShot-quick-copy-fixture.png";
+						download.style.cssText = "position:fixed;right:16px;bottom:10px;z-index:100;background:#2563eb;color:white;padding:8px 12px;border-radius:8px;font:12px sans-serif";
+						document.body.append(download);
 					}
 					return { success: true };
 				},
