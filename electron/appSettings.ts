@@ -29,6 +29,8 @@ export type AppSettings = {
 	usageStats: boolean;
 	/** When true, double-clicking a released selection only copies it; by default it opens the editor. */
 	overlayDoubleClickCopy: boolean;
+	/** When true (default), left-clicking the tray icon starts a capture; off leaves the click to the menu. */
+	trayClickCaptures: boolean;
 	/** Random UUID v4 created on the first report; identifies an installation, not a person. */
 	installationId: string | null;
 	shortcuts: ShortcutSettings;
@@ -48,6 +50,8 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
 	usageStats: true,
 	// Most captures are pasted straight away; the editor stays an explicit choice.
 	overlayDoubleClickCopy: false,
+	// Left-click capture matches the tray menu item; menu-bar managers can turn it off.
+	trayClickCaptures: true,
 	installationId: null,
 	shortcuts: {
 		capture: DEFAULT_CAPTURE_ACCELERATOR,
@@ -103,6 +107,10 @@ export function normalizeAppSettings(value: unknown): AppSettings {
 			typeof input.overlayDoubleClickCopy === "boolean"
 				? input.overlayDoubleClickCopy
 				: DEFAULT_APP_SETTINGS.overlayDoubleClickCopy,
+		trayClickCaptures:
+			typeof input.trayClickCaptures === "boolean"
+				? input.trayClickCaptures
+				: DEFAULT_APP_SETTINGS.trayClickCaptures,
 		installationId: isInstallationId(input.installationId)
 			? input.installationId.toLowerCase()
 			: DEFAULT_APP_SETTINGS.installationId,

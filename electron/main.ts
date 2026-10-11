@@ -2526,6 +2526,14 @@ async function setOverlayDoubleClickCopy(enabled: boolean) {
 	await persistAppSettings();
 }
 
+async function setTrayClickCaptures(enabled: boolean) {
+	if (appSettings.trayClickCaptures === enabled) return;
+	appSettings = { ...appSettings, trayClickCaptures: enabled };
+	applyTrayClickBehavior();
+	writeDiagnostic("tray-click-captures-changed", { enabled });
+	await persistAppSettings();
+}
+
 /**
  * macOS remembers a hidden menu bar item in the app's own defaults (the
  * "Allow in the Menu Bar" switch in System Settings, or ⌘-dragging the item
@@ -2540,6 +2548,18 @@ function allowMenuBarItem() {
 		if (systemPreferences.getUserDefault(key, "boolean") !== true) {
 			systemPreferences.setUserDefault(key, "boolean", true);
 		}
+	}
+}
+
+/**
+ * Menu-bar managers re-route or swallow tray clicks, so left-click capture can
+ * be turned off; the tray menu's capture item always works.
+ */
+function applyTrayClickBehavior() {
+	if (!tray || tray.isDestroyed()) return;
+	tray.removeAllListeners("click");
+	if (appSettings.trayClickCaptures) {
+		tray.on("click", () => requestCaptureFromUser("tray"));
 	}
 }
 
@@ -2561,7 +2581,7 @@ function createTray() {
 	tray = new Tray(icon);
 	tray.setToolTip(`QuickShot · ${shortcutLabel(captureShortcut())}`);
 	refreshTrayMenu();
-	tray.on("click", () => requestCaptureFromUser("tray"));
+	applyTrayClickBehavior();
 	// The menu bar hides items that do not fit; record where ours ended up.
 	setTimeout(() => {
 		if (tray && !tray.isDestroyed()) writeDiagnostic("tray-bounds", { ...tray.getBounds() });
@@ -2780,6 +2800,7 @@ function settingsState() {
 		language: appSettings.language,
 		macCaptureMode: appSettings.macCaptureMode,
 		overlayDoubleClickCopy: appSettings.overlayDoubleClickCopy,
+		trayClickCaptures: appSettings.trayClickCaptures,
 		launchAtLogin: app.getLoginItemSettings().openAtLogin,
 		launchAtLoginAvailable: app.isPackaged && process.platform !== "linux",
 		update: {
@@ -4135,6 +4156,12 @@ function registerIpcHandlers() {
 	ipcMain.handle("settings-set-overlay-double-click-copy", async (event, enabled: unknown) => {
 		if (!isTrustedWindowSender(event, settingsWindow) || typeof enabled !== "boolean") return { success: false };
 		await setOverlayDoubleClickCopy(enabled);
+		return { success: true, state: settingsState() };
+	});
+
+	ipcMain.handle("settings-set-tray-click-captures", async (event, enabled: unknown) => {
+		if (!isTrustedWindowSender(event, settingsWindow) || typeof enabled !== "boolean") return { success: false };
+		await setTrayClickCaptures(enabled);
 		return { success: true, state: settingsState() };
 	});
 

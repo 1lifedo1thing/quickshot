@@ -110,6 +110,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		setCaptureMode: (mode: "overlay" | "system") => ipcRenderer.invoke("settings-set-capture-mode", mode),
 		setOverlayDoubleClickCopy: (enabled: boolean) =>
 			ipcRenderer.invoke("settings-set-overlay-double-click-copy", enabled),
+		setTrayClickCaptures: (enabled: boolean) =>
+			ipcRenderer.invoke("settings-set-tray-click-captures", enabled),
 		setLaunchAtLogin: (enabled: boolean) => ipcRenderer.invoke("settings-set-launch-at-login", enabled),
 		checkUpdate: () => ipcRenderer.invoke("settings-check-update"),
 		installUpdate: () => ipcRenderer.invoke("settings-install-update"),
