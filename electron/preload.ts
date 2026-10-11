@@ -28,6 +28,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	screenshotRegionSelected: (payload: {
 		sessionId: number;
 		croppedImageBytes?: Uint8Array;
+		/** The styled export for clipboard copies, rendered by the overlay. */
+		composedImageBytes?: Uint8Array;
 		action?: "edit" | "copy" | "save" | "pin" | "scroll";
 		windowId?: number;
 		rect?: { x: number; y: number; width: number; height: number };
@@ -69,6 +71,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 			scroll?: boolean;
 			scrollAvailable?: boolean;
 			doubleClickCopy?: boolean;
+			styledCopy?: boolean;
 		}) => void,
 	) => {
 		const listener = (
@@ -80,6 +83,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 				scroll?: boolean;
 				scrollAvailable?: boolean;
 				doubleClickCopy?: boolean;
+				styledCopy?: boolean;
 			},
 		) => callback(payload);
 		ipcRenderer.on("capture-session", listener);
@@ -112,6 +116,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
 			ipcRenderer.invoke("settings-set-overlay-double-click-copy", enabled),
 		setTrayClickCaptures: (enabled: boolean) =>
 			ipcRenderer.invoke("settings-set-tray-click-captures", enabled),
+		setOverlayStyledCopy: (enabled: boolean) =>
+			ipcRenderer.invoke("settings-set-overlay-styled-copy", enabled),
 		setLaunchAtLogin: (enabled: boolean) => ipcRenderer.invoke("settings-set-launch-at-login", enabled),
 		checkUpdate: () => ipcRenderer.invoke("settings-check-update"),
 		installUpdate: () => ipcRenderer.invoke("settings-install-update"),

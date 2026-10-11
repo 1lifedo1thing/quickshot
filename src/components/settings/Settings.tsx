@@ -559,6 +559,20 @@ export function Settings() {
 							}
 						/>
 					</Row>
+					<Row
+						label={t("settings.styledCopy")}
+						detail={
+							<p className="mt-1 text-[11.5px] text-[var(--qs-text-3)]">{t("settings.styledCopyHint")}</p>
+						}
+					>
+						<Switch
+							checked={state.overlayStyledCopy}
+							label={t("settings.styledCopy")}
+							onChange={(enabled) =>
+								void api?.setOverlayStyledCopy(enabled).then((result) => result.state && setState(result.state))
+							}
+						/>
+					</Row>
 					{state.launchAtLoginAvailable && (
 						<Row label={t("settings.launchAtLogin")}>
 							<Switch

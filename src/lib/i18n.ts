@@ -283,6 +283,8 @@ const zh = {
 	"settings.doubleClickCopyHint": "开启后，双击选区只复制原图；关闭时，双击进入编辑器。",
 	"settings.trayClickCaptures": "左键点击图标立即截图",
 	"settings.trayClickCapturesHint": "关闭后，左键点击菜单栏图标只打开菜单，从菜单选择截图开始。",
+	"settings.styledCopy": "快速复制带样式",
+	"settings.styledCopyHint": "开启后，复制和双击直接得到编辑器样式的成品图；关闭后复制原始截图。",
 	"settings.selection.systemHint": "使用 macOS 自带的十字准星，按空格键切换到窗口。",
 	"settings.launchAtLogin": "登录时启动",
 	"settings.about": "关于与更新",
@@ -607,6 +609,9 @@ const en: Record<MessageKey, string> = {
 	"settings.trayClickCaptures": "Left-Click Tray Captures",
 	"settings.trayClickCapturesHint":
 		"When off, left-clicking the tray icon only opens the menu; capture starts from the menu item.",
+	"settings.styledCopy": "Styled Quick Copies",
+	"settings.styledCopyHint":
+		"When on, copy and double-click produce the editor's styled export; when off, they copy the bare capture.",
 	"settings.selection.systemHint": "The macOS crosshair; press Space to pick a window.",
 	"settings.launchAtLogin": "Launch at Login",
 	"settings.about": "About & Updates",

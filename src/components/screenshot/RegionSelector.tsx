@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { renderStyledCopy } from "@/editor/quickCompose";
 import { t } from "@/lib/i18n";
 import { bindingLabel, commandFor, useKeymap } from "@/lib/keymap";
 import { createFrameObjectUrl } from "@/lib/pngBytes";
@@ -246,6 +247,7 @@ export function RegionSelector() {
 	const scrollModeRef = useRef(false);
 	/** The session's double-click behaviour: copy the selection, or open the editor. */
 	const doubleClickCopyRef = useRef(false);
+	const styledCopyRef = useRef(false);
 	const [scrollMode, setScrollModeState] = useState(false);
 	const setScrollMode = useCallback((enabled: boolean) => {
 		scrollModeRef.current = enabled;
@@ -316,6 +318,7 @@ export function RegionSelector() {
 		scrollAvailableRef.current = false;
 		scrollModeRef.current = false;
 		doubleClickCopyRef.current = false;
+		styledCopyRef.current = false;
 		setScrollModeState(false);
 		if (clearActiveSession) activeSessionIdRef.current = null;
 		windowsRef.current = [];
@@ -356,6 +359,7 @@ export function RegionSelector() {
 			scroll?: boolean;
 			scrollAvailable?: boolean;
 			doubleClickCopy?: boolean;
+			styledCopy?: boolean;
 		}) => {
 			if (
 				disposed ||
@@ -371,6 +375,7 @@ export function RegionSelector() {
 			activeSessionIdRef.current = payload.sessionId;
 			scrollAvailableRef.current = Boolean(payload.scrollAvailable);
 			doubleClickCopyRef.current = Boolean(payload.doubleClickCopy);
+			styledCopyRef.current = Boolean(payload.styledCopy);
 			setScrollMode(Boolean(payload.scroll && payload.scrollAvailable));
 			let imageLoadCancel: (() => void) | null = null;
 
@@ -480,7 +485,10 @@ export function RegionSelector() {
 	 * in scrolling mode it starts a scrolling capture instead — and "copy"
 	 * puts the capture straight onto the clipboard. The main process does the
 	 * cropping from the lossless frame, or captures a clicked window on its own.
-	 * Quick copies use the original capture. Styling stays in the editor.
+	 * With styled copies on, "copy" also renders the editor's export (saved
+	 * background, frame and watermark) so the clipboard holds the finished
+	 * picture; clicked windows keep their raw capture, since the styled render
+	 * wraps frozen-frame pixels the window image would not match.
 	 */
 	const submit = useCallback(
 		async (rect: SelectionRect, target: DetectedWindow | null, intent: "edit" | "copy" = "edit") => {
@@ -504,11 +512,40 @@ export function RegionSelector() {
 			scheduleRender();
 
 			try {
+				// The styled export the editor would produce, rendered here so quick
+				// copies skip the editor. Failures just downgrade to the bare crop.
+				let composedImageBytes: Uint8Array | undefined;
+				if (intent === "copy" && styledCopyRef.current && !target?.id) {
+					try {
+						const crop = document.createElement("canvas");
+						crop.width = pixels.width;
+						crop.height = pixels.height;
+						const context = crop.getContext("2d");
+						if (context) {
+							context.drawImage(
+								image,
+								pixels.x,
+								pixels.y,
+								pixels.width,
+								pixels.height,
+								0,
+								0,
+								pixels.width,
+								pixels.height,
+							);
+							const unit = Math.min(4, Math.max(1, image.naturalWidth / window.innerWidth));
+							composedImageBytes = (await renderStyledCopy(crop, unit)) ?? undefined;
+						}
+					} catch (composeError) {
+						console.error("QuickShot could not render the styled copy", composeError);
+					}
+				}
 				const result = await window.electronAPI.screenshotRegionSelected({
 					sessionId,
 					action: intent === "copy" ? "copy" : scroll ? "scroll" : "edit",
 					rect: pixels,
 					windowId: scroll ? undefined : target?.id,
+					composedImageBytes,
 				});
 				if (activeSessionIdRef.current !== sessionId || result.success) return;
 				if (noticeTimerRef.current !== null) window.clearTimeout(noticeTimerRef.current);

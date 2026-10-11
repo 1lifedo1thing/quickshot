@@ -38,6 +38,7 @@ interface SettingsState {
 	macCaptureMode: "overlay" | "system";
 	overlayDoubleClickCopy: boolean;
 	trayClickCaptures: boolean;
+	overlayStyledCopy: boolean;
 	launchAtLogin: boolean;
 	launchAtLoginAvailable: boolean;
 	update: {
@@ -97,6 +98,8 @@ interface Window {
 				scrollAvailable?: boolean;
 				/** When true, double-clicking the selection only copies it. */
 				doubleClickCopy?: boolean;
+				/** When true, quick copies render the saved style template. */
+				styledCopy?: boolean;
 			};
 		}>;
 		regionSelectorReady: (
@@ -109,6 +112,8 @@ interface Window {
 			sessionId: number;
 			/** The selected area, encoded by the overlay. */
 			croppedImageBytes?: Uint8Array;
+			/** The styled export for clipboard copies, rendered by the overlay. */
+			composedImageBytes?: Uint8Array;
 			/** "scroll" starts a scrolling capture of `rect`. */
 			action?: "edit" | "copy" | "save" | "pin" | "scroll";
 			/** A clicked window, captured on its own by the main process. */
@@ -231,6 +236,8 @@ interface Window {
 				scrollAvailable?: boolean;
 				/** When true, double-clicking the selection only copies it. */
 				doubleClickCopy?: boolean;
+				/** When true, quick copies render the saved style template. */
+				styledCopy?: boolean;
 			}) => void,
 		) => () => void;
 		onPinnedInteractionRestored: (callback: () => void) => () => void;
@@ -264,6 +271,7 @@ interface Window {
 			setCaptureMode: (mode: "overlay" | "system") => Promise<{ success: boolean; state?: SettingsState }>;
 			setOverlayDoubleClickCopy: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
 			setTrayClickCaptures: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
+			setOverlayStyledCopy: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
 			setLaunchAtLogin: (enabled: boolean) => Promise<{ success: boolean; state?: SettingsState }>;
 			checkUpdate: () => Promise<{ success: boolean; state?: SettingsState }>;
 			installUpdate: () => Promise<{ success: boolean }>;

@@ -31,6 +31,8 @@ export type AppSettings = {
 	overlayDoubleClickCopy: boolean;
 	/** When true (default), left-clicking the tray icon starts a capture; off leaves the click to the menu. */
 	trayClickCaptures: boolean;
+	/** When true (default), quick copies render the saved style template; off copies the bare capture. */
+	overlayStyledCopy: boolean;
 	/** Random UUID v4 created on the first report; identifies an installation, not a person. */
 	installationId: string | null;
 	shortcuts: ShortcutSettings;
@@ -52,6 +54,8 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
 	overlayDoubleClickCopy: false,
 	// Left-click capture matches the tray menu item; menu-bar managers can turn it off.
 	trayClickCaptures: true,
+	// Quick copies hand over the styled export so pastes never need the editor.
+	overlayStyledCopy: true,
 	installationId: null,
 	shortcuts: {
 		capture: DEFAULT_CAPTURE_ACCELERATOR,
@@ -111,6 +115,10 @@ export function normalizeAppSettings(value: unknown): AppSettings {
 			typeof input.trayClickCaptures === "boolean"
 				? input.trayClickCaptures
 				: DEFAULT_APP_SETTINGS.trayClickCaptures,
+		overlayStyledCopy:
+			typeof input.overlayStyledCopy === "boolean"
+				? input.overlayStyledCopy
+				: DEFAULT_APP_SETTINGS.overlayStyledCopy,
 		installationId: isInstallationId(input.installationId)
 			? input.installationId.toLowerCase()
 			: DEFAULT_APP_SETTINGS.installationId,
