@@ -281,6 +281,8 @@ const zh = {
 	"settings.copyClosesHint": "关闭后，复制会保留编辑器；{key} 始终复制并关闭。",
 	"settings.doubleClickCopy": "双击仅复制",
 	"settings.doubleClickCopyHint": "开启后，双击选区只复制原图；关闭时，双击进入编辑器。",
+	"settings.styledCopy": "快速复制带样式",
+	"settings.styledCopyHint": "开启后，复制和双击直接得到编辑器样式的成品图；关闭后复制原始截图。",
 	"settings.selection.systemHint": "使用 macOS 自带的十字准星，按空格键切换到窗口。",
 	"settings.launchAtLogin": "登录时启动",
 	"settings.about": "关于与更新",
@@ -602,6 +604,9 @@ const en: Record<MessageKey, string> = {
 	"settings.doubleClickCopy": "Double-Click Copies Only",
 	"settings.doubleClickCopyHint":
 		"When on, double-clicking the selection copies the original capture; when off, it opens the editor.",
+	"settings.styledCopy": "Styled Quick Copies",
+	"settings.styledCopyHint":
+		"When on, copy and double-click produce the editor's styled export; when off, they copy the bare capture.",
 	"settings.selection.systemHint": "The macOS crosshair; press Space to pick a window.",
 	"settings.launchAtLogin": "Launch at Login",
 	"settings.about": "About & Updates",

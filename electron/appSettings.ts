@@ -29,6 +29,8 @@ export type AppSettings = {
 	usageStats: boolean;
 	/** When true, double-clicking a released selection only copies it; by default it opens the editor. */
 	overlayDoubleClickCopy: boolean;
+	/** When true (default), quick copies render the saved style template; off copies the bare capture. */
+	overlayStyledCopy: boolean;
 	/** Random UUID v4 created on the first report; identifies an installation, not a person. */
 	installationId: string | null;
 	shortcuts: ShortcutSettings;
@@ -48,6 +50,8 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
 	usageStats: true,
 	// Most captures are pasted straight away; the editor stays an explicit choice.
 	overlayDoubleClickCopy: false,
+	// Quick copies hand over the styled export so pastes never need the editor.
+	overlayStyledCopy: true,
 	installationId: null,
 	shortcuts: {
 		capture: DEFAULT_CAPTURE_ACCELERATOR,
@@ -103,6 +107,10 @@ export function normalizeAppSettings(value: unknown): AppSettings {
 			typeof input.overlayDoubleClickCopy === "boolean"
 				? input.overlayDoubleClickCopy
 				: DEFAULT_APP_SETTINGS.overlayDoubleClickCopy,
+		overlayStyledCopy:
+			typeof input.overlayStyledCopy === "boolean"
+				? input.overlayStyledCopy
+				: DEFAULT_APP_SETTINGS.overlayStyledCopy,
 		installationId: isInstallationId(input.installationId)
 			? input.installationId.toLowerCase()
 			: DEFAULT_APP_SETTINGS.installationId,
